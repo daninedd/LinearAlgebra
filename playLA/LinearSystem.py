@@ -45,7 +45,7 @@ class LinearSystem:
         self._backward()
 
     def fancy_print(self):
-
+        # git test
         for i in range(self._m):
             print(" ".join(str(self.Ab[i][j]) for j in range(self._n)), end=" ")
             print("|", self.Ab[i][-1])
