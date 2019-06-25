@@ -1,5 +1,6 @@
 from .Matrix import Matrix
 from .Vector import Vector
+from ._global import is_zero
 
 
 class LinearSystem:
@@ -9,40 +10,53 @@ class LinearSystem:
             "row number of A must be equal to the length of b"
         self._m = A.row_num()
         self._n = A.col_num()
+        self.pivots = []
 
         # 创建增广矩阵
         self.Ab = [Vector(A.row_vector(i).underline_list() + [b[i]]) for i in range(self._m)]
 
-    def _max_row(self, index, n):
-        best, ret = self.Ab[index][index], index
-        for i in range(index + 1, n):
-            if self.Ab[i][index] > best:
-                best, ret = self.Ab[i][index], i
+    def _max_row(self, index_i, index_j, n):
+        best, ret = self.Ab[index_i][index_j], index_i
+        for i in range(index_i + 1, n):
+            if self.Ab[i][index_j] > best:
+                best, ret = self.Ab[i][index_j], i
         return ret
 
     def _forward(self):
-        n = self._m
-        for i in range(n):
-            # Ab[i][i]为主元
-            max_row = self._max_row(i, n)
-            self.Ab[i], self.Ab[max_row] = self.Ab[max_row], self.Ab[i]
-            # 主元归一
-            self.Ab[i] = self.Ab[i] / self.Ab[i][i]
+        i, k = 0, 0
 
-            for j in range(i+1, n):
-                self.Ab[j] = self.Ab[j] - self.Ab[j][i] * self.Ab[i]
+        while i < self._m and k < self._n:
+            # 看Ab[i][k]位置是否可以为主元
+            max_row = self._max_row(i, k, self._m)
+            self.Ab[i], self.Ab[max_row] = self.Ab[max_row], self.Ab[i]
+
+            if is_zero(self.Ab[i][k]):
+                k += 1
+            else:
+                # 主元归一
+                self.Ab[i] = self.Ab[i] / self.Ab[i][k]
+                for j in range(i+1, self._m):
+                    self.Ab[j] = self.Ab[j] - self.Ab[j][k] * self.Ab[i]
+                self.pivots.append(k)
+                i += 1
 
     def _backward(self):
-        n = self._m
+        n = len(self.pivots)
 
         for i in range(n-1, -1, -1):
-            # Ab[i][i]为主元
+            k = self.pivots[i]
+            # Ab[i][k]为主元
             for j in range(i - 1, -1, -1):
-                self.Ab[j] = self.Ab[j] - self.Ab[j][i] * self.Ab[i]
+                self.Ab[j] = self.Ab[j] - self.Ab[j][k] * self.Ab[i]
 
     def gauss_jordan_elimination(self):
         self._forward()
         self._backward()
+
+        for i in range(len(self.pivots), self._m):
+            if not is_zero(self.Ab[i][-1]):
+                return False
+        return True
 
     def fancy_print(self):
         # git test
