@@ -1,33 +1,47 @@
 import numpy as np
 
 if __name__ == "__main__":
-    matrix = np.array([[1, 2], [3, 4]])
-    print(matrix)
-    print(matrix.shape)
-    print(matrix.T)
-    print(matrix[1, 1])
-    print(matrix[0])
-    print(matrix[:, 1])
-    print(matrix[1, :])
 
-    matrix2 = np.array([[5, 6], [7, 8]])
-    print(matrix+matrix2)
-    print(matrix - matrix2)
-    print(3 * matrix)
-    print(matrix.dot(matrix2))
+    # 矩阵的创建
+    A = np.array([[1, 2], [3, 4]])
+    print(A)
+
+    # 矩阵的属性
+    print(A.shape)
+    print(A.T)
+
+    # 获取矩阵的元素
+    print(A[1, 1])
+    print(A[0])
+    print(A[:, 0])
+    print(A[1, :])
+
+    # 矩阵的基本运算
+    B = np.array([[5, 6], [7, 8]])
+    print(A + B)
+    print(A - B)
+    print(10 * A)
+    print(A * 10)
+    print(A * B)
+    print(A.dot(B))
 
     p = np.array([10, 100])
-    print(matrix + p)
-    print(matrix.dot(p))
+    print(A + p)
+    print(A + 1)
 
-    P = np.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+    print(A.dot(p))
 
-    P1 = np.array([1, 2, 3])
+    # 单位矩阵
+    I = np.identity(2)
+    print(I)
+    print(A.dot(I))
+    print(I.dot(A))
 
-    print(P.dot(P1))
-
-    """你矩阵"""
-    invA = np.linalg.inv(matrix)
+    # 逆矩阵
+    invA = np.linalg.inv(A)
     print(invA)
-    print(invA.dot(matrix))
-    print(matrix.dot(invA))
+    print(invA.dot(A))
+    print(A.dot(invA))
+
+    # C = np.array([[1, 2, 3], [4, 5, 6]])
+    # np.linalg.inv(C)
